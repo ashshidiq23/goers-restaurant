@@ -4,6 +4,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import typescript from 'typescript-eslint';
+import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -39,6 +40,29 @@ export default [
     },
     {
         ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js'],
+    },
+    {
+        plugins: {
+            'simple-import-sort': simpleImportSortPlugin,
+        },
+        rules: {
+            'simple-import-sort/imports': [
+                'error',
+                {
+                    groups: [
+                        ['^react$', '^@inertiajs'],
+                        ['^@?\\w'],
+                        ['^@/'],
+                        ['^#'],
+                        ['^\\u0000'],
+                        ['^\\.\\.(?!/?$)', '^\\./?$'],
+                        ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+                        ['^.+\\.?(css)$'],
+                    ],
+                },
+            ],
+            'simple-import-sort/exports': 'error',
+        },
     },
     prettier, // Turn off all rules that might conflict with Prettier
 ];
