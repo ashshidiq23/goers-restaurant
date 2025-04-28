@@ -11,18 +11,18 @@ class RestaurantController extends Controller
     {
         $query = Restaurant::with('schedules');
 
-        if ($request->has('name')) {
+        if ($request->filled('name')) {
             $query->where('name', 'like', '%' . $request->name . '%');
         }
 
-        if ($request->has('date')) {
+        if ($request->filled('date')) {
             $dayName = \Carbon\Carbon::parse($request->date)->format('l');
             $query->whereHas('schedules', function ($q) use ($dayName) {
                 $q->where('day', $dayName);
             });
         }
 
-        if ($request->has('time')) {
+        if ($request->filled('time')) {
             $time = $request->time;
             $query->whereHas('schedules', function ($q) use ($time) {
                 $q->where('open_time', '<=', $time)

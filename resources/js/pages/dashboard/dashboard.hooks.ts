@@ -1,5 +1,8 @@
+import { useState } from 'react';
+
 import useGetData from '@/hooks/use-get-data';
 import { BreadcrumbItem } from '@/types';
+import createQueryParams from '@/utils/create-query-params';
 
 import {
     type NormalizedRestaurants,
@@ -15,16 +18,27 @@ const useDashboard = () => {
         },
     ];
 
+    const [queryParams, setQueryParams] = useState({name: '', date: '', time: ''})
+
     const {
         data,
         isLoading,
     } = useGetData<NormalizedRestaurants, Restaurants>(
-        ['restaurantList'],
+        ['restaurantList', createQueryParams(queryParams)],
         'api/restaurants',
-        { normalizer: restaurantsNormalizer }
+        { normalizer: restaurantsNormalizer, params: queryParams }
     );
 
-    return { breadcrumbs, data, isLoading };
+    const handleChangeFilter = (key: string, value: string) => {
+        setQueryParams((prev) => ({ ...prev, [key]: value }));
+    }
+
+    return {
+        breadcrumbs,
+        data,
+        isLoading,
+        handleChangeFilter,
+    };
 }
 
 export default useDashboard;
